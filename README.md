@@ -1,9 +1,9 @@
 # ToDo App
 
 Using:
-Create-react-app
-React Hooks
-MaterialUI https://material-ui.com/ru/getting-started/installation/
+Create-react-app. 
+React Hooks. 
+MaterialUI https://material-ui.com/ru/getting-started/installation/. 
 
 Перед запуском необходима установка зависимостей:
 yarn install
