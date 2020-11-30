@@ -12,13 +12,15 @@ import {
 } from "@material-ui/core";
 import AddBoxIcon from "@material-ui/icons/AddBox";
 import TodoItem from "./TodoItem";
+import EditModal from "../components/EditModal";
 
 const TodoList = () => {
+  const [editModalState, setEditModalState] = useState(null); // null | {id: number, task: string}
   const [todos, setTodos] = useState([]);
   const [todo, setTodo] = useState("");
   useEffect(() => {
     localStorage.items
-      ? JSON.parse(localStorage.getItem("items"))
+      ? setTodos(JSON.parse(localStorage.getItem("items")))
       : setTodos([]);
   }, []);
   const handleChange = (e) => {
@@ -30,26 +32,43 @@ const TodoList = () => {
       return;
     }
     let todoObj = {
-      id: todos.length + 1,
+      id: `f${(+new Date()).toString(16)}`,
       task: todo,
       completed: false,
       createdOn: new Date().toLocaleString(),
     };
-    localStorage.setItem("items", JSON.stringify([...todos, todoObj]));
-    setTodos([...todos, todoObj]);
+    updateTodos([...todos, todoObj]);
     setTodo("");
   };
-  const completedTodo = (index) => {
-    const newItem = todos.map((item) => {
-      if (item.id === index) {
+  const handleComplete = (id) => {
+    const updatedItems = todos.map((item) => {
+      if (item.id === id) {
         item.completed = !item.completed;
       }
       return item;
     });
-    localStorage.setItem("items", JSON.stringify(newItem));
-    setTodos(newItem);
+    updateTodos(updatedItems);
+  };
+  const handleDelete = (todoId) => {
+    const removeTodo = todos.filter((todoItem) => todoItem.id !== todoId);
+    updateTodos(removeTodo);
   };
 
+  const updateTodos = (todos) => {
+    localStorage.setItem("items", JSON.stringify(todos));
+    setTodos(todos);
+  };
+  const handleEditSubmit = () => {
+    if (!editModalState) return;
+
+    const { id, task } = editModalState;
+
+    const editedItems = todos.map((itemTodo) => {
+      if (itemTodo.id === id) return { ...itemTodo, task };
+      return itemTodo;
+    });
+    updateTodos(editedItems);
+  };
   todos.sort((a, b) => a.completed - b.completed);
 
   return (
@@ -71,11 +90,15 @@ const TodoList = () => {
         {todos.length > 0 ? (
           todos.map((todoItem) => (
             <TodoItem
+              onDelete={() => handleDelete(todoItem.id)}
+              onComplete={() => handleComplete(todoItem.id)}
               todoItem={todoItem}
               key={todoItem.id}
-              completedTodo={completedTodo}
               todos={todos}
               setTodos={setTodos}
+              onEdit={() =>
+                setEditModalState({ task: todoItem.task, id: todoItem.id })
+              }
             />
           ))
         ) : (
@@ -85,6 +108,19 @@ const TodoList = () => {
             </ListItem>
             <Divider />
           </List>
+        )}
+        {!!editModalState && (
+          <EditModal
+            isOpen
+            onClose={() => {
+              setEditModalState(null);
+            }}
+            onSubmit={handleEditSubmit}
+            task={editModalState.task}
+            handleEditChange={(task) =>
+              setEditModalState({ ...editModalState, task })
+            }
+          />
         )}
       </Container>
     </React.Fragment>

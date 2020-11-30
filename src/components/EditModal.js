@@ -8,7 +8,7 @@ import {
   TextField,
 } from "@material-ui/core";
 
-const EditModal = ({ isOpen, onClose, onSubmit, todo, handleEditChange }) => {
+const EditModal = ({ isOpen, onClose, onSubmit, task, handleEditChange }) => {
   return (
     <React.Fragment>
       <Dialog
@@ -25,7 +25,7 @@ const EditModal = ({ isOpen, onClose, onSubmit, todo, handleEditChange }) => {
             label="Измени ToDo-ху"
             type="text"
             fullWidth
-            value={todo}
+            value={task}
             onChange={(e) => handleEditChange(e.target.value)}
           />
         </DialogContent>
