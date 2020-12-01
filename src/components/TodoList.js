@@ -15,7 +15,7 @@ import TodoItem from "./TodoItem";
 import EditModal from "../components/EditModal";
 
 const TodoList = () => {
-  const [editModalState, setEditModalState] = useState(null); // null | {id: number, task: string}
+  const [editModalState, setEditModalState] = useState(null);
   const [todos, setTodos] = useState([]);
   const [todo, setTodo] = useState("");
   useEffect(() => {
