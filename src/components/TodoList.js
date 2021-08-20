@@ -15,7 +15,7 @@ import TodoItem from "./TodoItem";
 import EditModal from "../components/EditModal";
 
 const TodoList = () => {
-  const [editModalState, setEditModalState] = useState(null); // null | {id: number, task: string}
+  const [editModalState, setEditModalState] = useState(null);
   const [todos, setTodos] = useState([]);
   const [todo, setTodo] = useState("");
   useEffect(() => {
@@ -23,14 +23,15 @@ const TodoList = () => {
       ? setTodos(JSON.parse(localStorage.getItem("items")))
       : setTodos([]);
   }, []);
+
   const handleChange = (e) => {
     setTodo(e.target.value);
   };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!todo) {
-      return;
-    }
+    if (!todo) return;
+
     let todoObj = {
       id: `f${(+new Date()).toString(16)}`,
       task: todo,
@@ -40,6 +41,7 @@ const TodoList = () => {
     updateTodos([...todos, todoObj]);
     setTodo("");
   };
+  
   const handleComplete = (id) => {
     const updatedItems = todos.map((item) => {
       if (item.id === id) {
@@ -60,13 +62,10 @@ const TodoList = () => {
   };
   const handleEditSubmit = () => {
     if (!editModalState) return;
-
     const { id, task } = editModalState;
-
-    const editedItems = todos.map((itemTodo) => {
-      if (itemTodo.id === id) return { ...itemTodo, task };
-      return itemTodo;
-    });
+    const editedItems = todos.map((itemTodo) =>
+      itemTodo.id === id ? { ...itemTodo, task } : itemTodo
+    );
     updateTodos(editedItems);
   };
   todos.sort((a, b) => a.completed - b.completed);
